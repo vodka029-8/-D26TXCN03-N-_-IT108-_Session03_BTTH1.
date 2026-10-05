@@ -1,0 +1,17 @@
+Phần 1: Phân tích các sai lầm và hiểu lầm của Nam
+1. Sai lầm về vị trí lưu trữ bài tập
+ Nam đang lưu bài tập trong đường dẫn C:\Windows\System32\. Đây là thư mục hệ thống cốt lõi của Windows quản lí hệ điều hành
+ Hậu quả:
+	 Khi cài lại Windows, toàn bộ dữ liệu trong ổ C bao gồm cả thư mục này sẽ bị xóa sạch.
+2. Sai lầm về cách đặt tên file và thư mục
+ Đặt tên có khoảng trắng và dấu Tiếng Việt: Thư mục Bai Tap Cua Nam và Session 01, cùng file bai tap 1.py chứa khoảng trắng và ký tự có dấu.
+3. Hiểu lầm về tốc độ mạng
+ Nam đang nhầm lẫn giữa hai đơn vị: Mbps (Megabit per second - đơn vị đo băng thông nhà mạng) và MB/s  
+  Với gói mạng 100 Mbps, tốc độ tải tối đa trên lý thuyết là:100/8 12,5 mb/s 
+4. Tại sao ổ SSD 256 GB thực tế hiển thị dung lượng thấp hơn?
+ Sự khác biệt về hệ cơ số tính toán:
+ Nhà sản xuất phần cứng dùng hệ thập phân (Cơ số 10): 1 GB = 1.000.000.000 Bytes
+ Hệ điều hành Windows dùng hệ nhị phân (Cơ số 2):1 GB = 1.024*1.024*1.024 = 1.073.741.824 Bytes
+ Tính toán thực tế: 256000000000/1073741824=238,418GB
+Phần 2: Thiết kế lại cây thư mục học tập chuẩn trên ổ D
+D:\HocTap\MonPythonPTIT\Buoi01\bai-tap-1.py
