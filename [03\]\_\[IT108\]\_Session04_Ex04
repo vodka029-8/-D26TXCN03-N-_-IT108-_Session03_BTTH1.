@@ -1,0 +1,21 @@
+
+Phần 1: Phân tích & Đề xuất
+
+Dưới đây là phần phân tích ưu và nhược điểm của hai cách viết đường dẫn dựa trên các tiêu chí yêu cầu:
+Tính di động (Portability)
+• Cách 1 (Tuyệt đối): Kém linh hoạt. Mã nguồn bị gắn chặt vào cấu trúc thư mục của máy An. Khi gửi cho bạn bè (những người có tên User khác hoặc lưu ở ổ đĩa khác như D:, E:), code sẽ bị lỗi FileNotFoundError vì hệ thống không thể tìm thấy đúng đường dẫn tĩnh này.
+• Cách 2 (Tương đối): Rất cao. Đường dẫn chỉ phụ thuộc vào vị trí giữa file code và file dữ liệu. Khi gửi toàn bộ thư mục Project, cấu trúc phân cấp bên trong không thay đổi nên chương trình luôn chạy bình thường trên bất kỳ máy nào.
+Độ dài câu lệnh
+• Cách 1 (Tuyệt đối): Dài và rườm rà. Người viết phải khai báo toàn bộ cấu trúc từ ổ đĩa gốc đến tên file.
+• Cách 2 (Tương đối): Ngắn gọn và sạch sẽ. Chỉ cần viết các bước di chuyển từ thư mục chứa file code hiện tại đến file dữ liệu.
+Tính an toàn
+• Cách 1 (Tuyệt đối): Thấp. Cách viết này vô tình làm lộ thông tin cá nhân hoặc cấu trúc bảo mật nội bộ (như tên tài khoản hệ thống An trên máy tính) khi chia sẻ mã nguồn công khai hoặc gửi cho bạn bè.
+• Cách 2 (Tương đối): Cao. Hoàn toàn bảo mật cấu trúc thư mục gốc của hệ điều hành và tên tài khoản người dùng trên máy tính.
+
+Phần 2: Lựa chọn
+
+Giải pháp tối ưu cho An là Cách 2: Sử dụng đường dẫn tương đối (../Data/users.csv).
+Lựa chọn này đáp ứng hoàn toàn quy tắc nghiệp vụ, đảm bảo tính Portability (Tính di động) để bất kỳ ai cũng có thể chạy được ứng dụng khi nhận thư mục Project.
+Ý nghĩa của các ký hiệu trong đường dẫn tương đối:
+• Dấu chấm đơn (.): Đại diện cho thư mục hiện hành (thư mục chứa file code đang chạy, cụ thể trong bài là thư mục src).
+• Dấu chấm đôi (..): Đại diện cho thư mục cha (thư mục cấp cao hơn một bậc so với thư mục hiện hành). Trong bài toán này, khi code đang đứng ở Project/src, ký hiệu .. sẽ giúp "đi lùi" ra ngoài một cấp để trở về thư mục Project. Sau đó, hệ thống mới tiếp tục đi vào thư mục Data để truy cập file users.csv.
