@@ -1,0 +1,28 @@
+Phần 1: Mã nguồn
+# Bước 1: Tạo cây thư mục theo yêu cầu (sử dụng -Force để tự động tạo các thư mục cha nếu chưa có)
+New-Item -ItemType Directory -Path ".\Farm-Manager\code\app", ".\Farm-Manager\database\db", ".\Farm-Manager\logs\guides" -Force
+
+# Bước 2: Di chuyển vào thư mục app để tạo các file code
+cd .\Farm-Manager\code\app
+
+# Bước 3: Tạo 3 file rỗng main.py, models.py, utils.py trong thư mục app
+New-Item -ItemType File -Name "main.py", "models.py", "utils.py"
+
+# Bước 4: Quay trở lại thư mục gốc Farm-Manager để thực hiện thao tác với thư mục logs
+cd ..\..\..
+
+# Bước 5: Sao chép đệ quy toàn bộ thư mục logs sang logs-backup (nằm ngang hàng với logs)
+Copy-Item -Path ".\Farm-Manager\logs" -Destination ".\Farm-Manager\logs-backup" 
+• Giải thích các tham số quan trọng:
+	• -Force: Cho phép tạo các thư mục lồng nhau trong một câu lệnh duy nhất mà không bị lỗi nếu thư mục cha chưa tồn tại, hoặc ghi đè nếu file đã có sẵn.
+	• -Recurse: Tham số bắt buộc khi sao chép thư mục để hệ thống quét và sao chép toàn bộ nội dung bên trong (bao gồm các thư mục con như guides và các file ẩn) thay vì chỉ sao chép một vỏ thư mục rỗng.
+
+Phần 2: Kiểm thử
+
+Để kiểm tra kết quả cây thư mục vừa tạo, bạn thực thi câu lệnh sau tại thư mục gốc:
+powershell
+Get-ChildItem -Path ".\Farm-Manager" -Recurse
+Hãy thận trọng khi sử dụng mã.
+(Hoặc có thể dùng lệnh rút gọn: ls .\Farm-Manager -Recurse)
+Giải thích ý nghĩa của đường dẫn tương đối (.\):
+Việc sử dụng đường dẫn tương đối với tiền tố .\ giúp câu lệnh hoạt động linh hoạt dựa trên vị trí hiện tại của con trỏ dòng lệnh mà không bị phụ thuộc vào cấu trúc ổ đĩa cố định. Nếu sử dụng đường dẫn tuyệt đối (như C:\Users\...), mã nguồn sẽ bị lỗi ngay lập tức khi chuyển sang chạy ở một máy tính khác có tên người dùng khác hoặc triển khai trên các phân vùng ổ đĩa khác (D:\, E:\). Đường dẫn tương đối đảm bảo tính cơ động và chuẩn hóa cho môi trường làm việc từ xa.
