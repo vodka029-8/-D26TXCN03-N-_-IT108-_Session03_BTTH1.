@@ -1,0 +1,20 @@
+1. Bước 1: Kiểm tra thư mục hiện tại
+Khi mở Windows PowerShell, hệ thống hiển thị đường dẫn làm việc hiện hành tại dấu nhắc lệnh. Bằng cách sử dụng cmdlet Get-Location (hoặc alias pwd), ta xác định được bạn đang đứng tại thư mục C:\Users\<User>\Desktop.
+• Bước 2: Liệt kê các file/thư mục để xác minh
+Sử dụng cmdlet Get-ChildItem (hoặc alias dir / ls) tại thư mục hiện tại (Desktop), danh sách trả về không chứa file deploy.ps1. Do file không tồn tại ở đây, việc gõ trực tiếp tên file hay kể cả thêm tiền tố .\deploy.ps1 đều khiến PowerShell báo lỗi không tìm thấy đường dẫn (PathNotFoundException).
+• Bước 3: Xác định vị trí thực tế và giải thích cơ chế bảo mật
+	• Vị trí thực tế: File deploy.ps1 đang nằm tại thư mục C:\Users\<User>\Downloads\Project.
+	• Cơ chế bảo mật của PowerShell: Khác với CMD truyền thống tự động tìm kiếm và thực thi file trong thư mục hiện hành khi gõ tên, PowerShell chặn hoàn toàn cơ chế này để ngăn ngừa các cuộc tấn công dạng Trojan horse (khi kẻ xấu đặt file trùng tên với lệnh hệ thống trong thư mục hiện tại). Do đó, PowerShell bắt buộc phải có tiền tố .\ (đường dẫn tường minh đến thư mục hiện tại) để xác nhận bạn chủ động chạy file đó. Nếu đứng sai thư mục, tiền tố .\ sẽ trỏ sai vị trí và hệ thống không thể thực thi file.
+
+Phần 2: Sửa lỗi
+
+Dưới đây là chuỗi lệnh PowerShell tuần tự giúp bạn di chuyển, kiểm tra và thực thi file script thành công:
+powershell
+# 1. Di chuyển từ Desktop đến đúng thư mục chứa file bằng đường dẫn tương đối (hoặc tuyệt đối)
+cd ..\Downloads\Project
+
+# 2. Kiểm tra xác nhận file deploy.ps1 có mặt trong thư mục mới hay chưa
+Test-Path .\deploy.ps1
+
+# 3. Thực thi file script thành công sau khi đã đứng đúng thư mục chứa file
+.\deploy.ps1
