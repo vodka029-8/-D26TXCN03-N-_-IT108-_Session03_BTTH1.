@@ -1,0 +1,37 @@
+PHẦN 1: PHÂN TÍCH LỖI SAI
+Chuỗi lệnh ban đầu của Nam:
+
+PowerShell
+mkdir Smart Farm Project
+cd Smart Farm Project
+mkdir src/sensors/temperature
+Nam gặp phải 2 lỗi sai chính sau:
+
+1. Không bao bọc chuỗi tên thư mục có khoảng trắng bằng dấu ngoặc kép ""
+Hiện tượng: Khi chạy mkdir Smart Farm Project hoặc cd Smart Farm Project, PowerShell hiểu khoảng trắng là dấu phân cách các tham số (arguments) khác nhau.
+
+Hậu quả:
+
+Với mkdir: PowerShell hiểu Nam muốn tạo 3 thư mục riêng biệt tên là Smart, Farm, và Project cùng một lúc, thay vì 1 thư mục mang tên Smart Farm Project.
+
+Với cd: Lệnh cd Smart Farm Project sẽ báo lỗi cú pháp do PowerShell nhận diện quá nhiều tham số đầu vào.
+
+2. Dùng sai dấu phân cách đường dẫn trên Windows / PowerShell
+Hiện tượng: Lệnh mkdir src/sensors/temperature dùng dấu gạch xuyết /
+Hậu quả: Trên hệ điều hành Windows, dấu phân cách chuẩn cho các đường dẫn thư mục trong PowerShell là dấu gạch ngược \. Dù PowerShell bản mới có hỗ trợ linh hoạt một số trường hợp /, việc sử dụng không đồng bộ dấu / dễ gây lỗi tương thích hoặc không nhận diện đúng đường dẫn lồng nhau trên một số phiên bản Windows/PowerShell cũ hơn.
+
+PHẦN 2: HOÀN THIỆN & TỐI ƯU CÂU LỆNH POWERSHELL
+Cách 1: Tối ưu gọn nhất trên 1 dòng lệnh (Khuyên dùng)
+Tạo toàn bộ cấu trúc thư mục lồng nhau ngay từ ngoài bằng câu lệnh duy nhất (sử dụng dấu ngoặc kép cho tên chứa khoảng trắng và dấu \ cho đường dẫn Windows):
+
+PowerShell
+mkdir "Smart Farm Project\src\sensors\temperature"
+Giải thích: Trong PowerShell, alias mkdir (hoặc cmdlet New-Item -ItemType Directory) có khả năng tự động tạo tất cả các thư mục cha còn thiếu trong đường dẫn truyền vào.
+
+Cách 2: Thực hiện từng bước chuẩn xác
+Nếu muốn di chuyển vào trong thư mục dự án rồi mới tạo các thư mục con:
+
+PowerShell
+mkdir "Smart Farm Project"
+cd "Smart Farm Project"
+mkdir "src\sensors\temperature"
