@@ -1,0 +1,50 @@
+
+1. Sơ đồ luồng IPO (Input - Process - Output)
+
+Input (Dữ liệu đầu vào):
+Robot thực hiện quét toàn bộ nội dung hiện có trong thư mục Downloads. Dữ liệu thô thu thập được bao gồm:
+• Các file hình ảnh có đuôi mở rộng là .png, .jpg, .jpeg.
+• Các file mã nguồn có đuôi mở rộng là .py.
+• Các file tạm có đuôi mở rộng là .tmp.
+• Các thư mục con hoặc các định dạng file không liên quan khác.
+Process (Logic xử lý):
+Robot chạy qua từng đối tượng tìm thấy và thực hiện các bước kiểm tra:
+• Phân loại đối tượng xem đó là file thông thường hay là một thư mục (Directory).
+• Đọc phần đuôi mở rộng của file để xếp vào nhóm tương ứng (Ảnh, Code, hoặc File tạm).
+• Kiểm tra sự tồn tại của thư mục đích (media/ và scripts/), nếu chưa có thì phải tạo mới.
+• Kiểm tra xung đột tên bằng cách xem ở thư mục đích đã có thư mục nào trùng tên với file chuẩn bị di chuyển hay chưa nhằm phòng tránh lỗi hệ thống.
+Output (Kết quả đầu ra):
+Robot thực thi hành động tương ứng với kết quả phân loại:
+• Di chuyển an toàn các file ảnh (.png, .jpg, .jpeg) vào bên trong thư mục media/.
+• Di chuyển an toàn các file code (.py) vào bên trong thư mục scripts/.
+• Xóa vĩnh viễn các file tạm (.tmp) bằng lệnh xóa để giải phóng dung lượng cho máy chủ.
+• Ghi lại nhật ký (log) thông báo lỗi hoặc bỏ qua đối với các trường hợp bị xung đột tên nhằm giữ cho Robot không bị crash.
+
+2. Giải pháp xử lý trường hợp kiểm thử (Edge Case: Lỗi "Is a directory")
+
+Khi Robot chạy lệnh di chuyển mv file_name target_dir/, nếu ở thư mục đích đã tồn tại sẵn một thư mục con có tên chính xác là file_name (ví dụ: trong mục media/ đã có một folder tên là logo.png), hệ điều hành Linux sẽ chặn lại và báo lỗi "Is a directory". Lỗi này khiến câu lệnh thất bại và có thể làm Robot dừng hoạt động đột ngột (crash).
+Để không gây crash, Robot cần được thiết lập logic xử lý an toàn như sau:
+• Bước kiểm tra trước (Type-checking): Trước khi thực hiện lệnh mv, Robot phải kiểm tra đường dẫn đích xem tên đó đã tồn tại chưa, và nếu tồn tại thì nó là file hay là thư mục.
+• Cơ chế bỏ qua và ghi nhận (Skip & Log): Nếu phát hiện trùng tên với một thư mục có sẵn ở đích, Robot sẽ dừng lệnh di chuyển đối với file đó, tiếp tục chuyển sang xử lý file tiếp theo, đồng thời in ra màn hình hoặc ghi vào file log dòng cảnh báo để quản trị viên kiểm tra lại sau.
+• Cơ chế đổi tên tự động (Fallback Rename): Một giải pháp nâng cao hơn là Robot tự động chèn thêm chuỗi ký tự thời gian (Timestamp) vào sau tên file bị trùng trước khi di chuyển để đảm bảo không bị lỗi cấu trúc.
+
+3. Danh sách câu lệnh kịch bản cho Robot
+
+Dưới đây là chuỗi kịch bản dòng lệnh chuẩn hệ điều hành Linux (sử dụng lệnh mv, rm, mkdir kết hợp vòng lặp điều kiện) để Robot thực thi tự động và an toàn:
+Bước 1: Khởi tạo các thư mục đích
+mkdir -p media scripts
+(Lệnh này giúp tự động tạo thư mục media và scripts nếu chúng chưa tồn tại, còn nếu đã có sẵn thì hệ thống sẽ bỏ qua chứ không báo lỗi).
+Bước 2: Vòng lặp kiểm tra và xử lý từng đối tượng trong Downloads
+Robot sẽ duyệt qua từng mục ($item) đang nằm trong thư mục hiện hành theo kịch bản logic sau:
+• Điều kiện lọc đầu tiên: Nếu $item là một thư mục, Robot sẽ bỏ qua ngay lập tức để không xử lý nhầm folder.
+• Trường hợp file là ảnh (.png, .jpg, .jpeg):
+	• Kiểm tra xem đường dẫn media/$item có phải là một thư mục đang tồn tại hay không.
+	• Nếu đúng là thư mục, Robot in ra cảnh báo: "Cảnh báo: media/$item là thư mục, bỏ qua file $item".
+	• Nếu không bị trùng thư mục, Robot chạy lệnh: mv -- "$item" media/
+• Trường hợp file là mã nguồn (.py):
+	• Kiểm tra xem đường dẫn scripts/$item có phải là một thư mục đang tồn tại hay không.
+	• Nếu đúng là thư mục, Robot in ra cảnh báo: "Cảnh báo: scripts/$item là thư mục, bỏ qua file $item".
+	• Nếu không bị trùng thư mục, Robot chạy lệnh: mv -- "$item" scripts/
+• Trường hợp file là file tạm (.tmp):
+	• Robot thực hiện xóa ngay lập tức bằng lệnh: rm -f -- "$item"
+(Tùy chọn -f giúp lệnh xóa chạy ép buộc, không hiển thị câu hỏi xác nhận và không báo lỗi nếu file vô tình bị biến mất trước đó).
