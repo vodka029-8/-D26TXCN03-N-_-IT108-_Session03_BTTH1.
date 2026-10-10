@@ -1,0 +1,63 @@
+
+I. Bản phân tích luồng IPO (Input - Process - Output)
+
+
+Thành phần	Chi tiết cấu phần
+Input (Đầu vào)	- Vị trí thư mục hiện hành: Thư mục Home (~).
+- File mẫu gốc: C:\Users\Public\template.ps1 (hoặc đường dẫn tương đương đến thư mục Public).
+- Thông tin cấu hình: Mật khẩu cảm biến cho file .env.
+Process (Xử lý)	- Khởi tạo: Tạo đồng thời cấu trúc cây thư mục bằng lệnh tạo thư mục hàng loạt.
+- Bảo mật: Tạo file cấu hình ẩn chứa thông tin nhạy cảm.
+- Triển khai: Sao chép và đổi tên file script điều khiển thiết bị trong một bước.
+- Kiểm tra: Quét sâu toàn bộ thư mục để xác thực cấu trúc cấu hình.
+Output (Đầu ra)	- Cấu trúc thư mục ~/smart-farm/ hoàn chỉnh gồm 3 thư mục con (bin, config, data).
+- File ẩn ~/smart-farm/config/.env chứa mật khẩu.
+- File thực thi ~/smart-farm/bin/pump_control.ps1.
+- Báo cáo trạng thái cấu trúc hiển thị trực quan trên màn hình console.
+
+
+II. Nhật ký (Log) các câu lệnh PowerShell thực hiện
+
+
+Bước 1: Tạo cấu trúc thư mục bằng 1 dòng lệnh
+
+powershell
+"bin", "config", "data" | ForEach-Object { New-Item -Path "~\smart-farm\$_" -ItemType Directory -Force }
+
+(Lệnh này tận dụng cơ chế Pipeline để truyền danh sách tên thư mục qua vòng lặp, tự động tạo thư mục cha smart-farm nếu chưa có nhờ tham số -Force)
+
+Bước 2: Tạo file ẩn .env và giải thích
+
+• Lệnh tạo file ẩn:
+powershell
+New-Item -Path "~\smart-farm\config\.env" -ItemType File -Value "SENSOR_PASSWORD=SecurePass123" -Attributes Hidden
+Hãy thận trọng khi sử dụng mã.
+• Giải thích lý do Get-ChildItem thông thường không nhìn thấy file .env:
+Theo mặc định thiết kế của Windows và PowerShell, lệnh Get-ChildItem sẽ bỏ qua các mục có thuộc tính hệ thống ẩn (Hidden) hoặc hệ thống (System) nhằm bảo vệ các file cấu hình cốt lõi khỏi việc bị chỉnh sửa hoặc xóa nhầm bởi người dùng phổ thông. Để nhìn thấy file này, bạn bắt buộc phải thêm tham số -Force vào sau câu lệnh (Get-ChildItem -Force).
+
+Bước 3: Sao chép và đổi tên file mẫu trong 1 lệnh duy nhất
+
+powershell
+Copy-Item -Path "C:\Users\Public\template.ps1" -Destination "~\smart-farm\bin\pump_control.ps1" -Force
+
+(Bằng cách chỉ định thẳng tên file mới pump_control.ps1 ở tham số -Destination, PowerShell sẽ thực hiện đồng thời việc sao chép dữ liệu và đổi tên file tại đích đến)
+
+Bước 4: Liệt kê kiểm tra lại toàn bộ cấu trúc thư mục
+
+powershell
+Get-ChildItem -Path "~\smart-farm" -Recurse -Force
+
+(Tham số -Recurse giúp quét sâu vào các thư mục con bên trong, kết hợp -Force để hiển thị cả file .env bị ẩn ở Bước 2)
+
+III. Xử lý ràng buộc lỗi "Access to the path is denied"
+
+Nếu gặp lỗi từ chối truy cập khi tương tác với thư mục hệ thống hoặc thư mục Public, bạn có thể nâng quyền quản trị (Administrator) cho PowerShell bằng các cách sau:
+• Cách 1: Khởi chạy cửa sổ PowerShell Admin mới từ cửa sổ hiện tại (Nên dùng)
+Khởi chạy ngay một tiến trình PowerShell có quyền cao nhất từ dòng lệnh hiện hành:
+powershell
+Start-Process powershell -Verb RunAs
+
+• Cách 2: Chạy trực tiếp một lệnh đơn lẻ dưới quyền Admin
+Nếu không muốn mở cửa sổ mới mà chỉ muốn thực thi riêng lệnh copy ở Bước 3 với quyền tối cao:
+powershell
+Start-Process powershell -ArgumentList "-Command Copy-Item -Path 'C:\Users\Public\template.ps1' -Destination '~\smart-farm\bin\pump_control.ps1' -Force" -Verb RunAs
