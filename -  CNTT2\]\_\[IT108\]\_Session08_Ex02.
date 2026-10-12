@@ -1,0 +1,34 @@
+
+Phần 1. Phân tích lỗi cú pháp
+
+Trong đoạn mã của bạn sinh viên có 3 lỗi cú pháp chính khiến kết quả render bị lỗi:
+1. Thiếu khoảng trắng sau ký tự #:
+	• Lỗi: Dòng ###Giới thiệu dự án viết dính liền ký tự # với chữ.
+	• Hậu quả: Markdown không nhận diện đây là tiêu đề H3 mà sẽ hiển thị nó như một đoạn văn bản bình thường kèm dấu ###.
+2. Sai cú pháp chèn ảnh:
+	• Lỗi: Dòng [Logo PTIT](https://ptit.edu.vn/logo.png) có một khoảng trắng ở giữa cặp ngoặc vuông [] và cặp ngoặc đơn ().
+	• Hậu quả: Trình biên dịch hiểu đây là một chuỗi văn bản thường chứ không phải cú pháp chèn ảnh, dẫn đến việc ảnh không hiển thị.
+3. Chưa áp dụng cú pháp in đậm:
+	• Lỗi: Dòng Đây là đoạn văn bản in đậm. chỉ là văn bản thuần túy, chưa có các ký tự định dạng ** hoặc __.
+	• Hậu quả: Chữ hiển thị ở dạng bình thường, không được in đậm.
+4. Vi phạm quy tắc phân cấp tiêu đề (Bẫy dữ liệu):
+	• Lỗi: Bài viết có hai tiêu đề lớn (# Tiêu đề 1 và ## Mục tiêu), nhưng tiêu đề xen giữa lại là ### Giới thiệu dự án (nếu sửa lại cho đúng cú pháp). Cấu trúc nhảy bậc từ H1 xuống H3 rồi lên H2 làm cấu trúc trang web bị lộn xộn. Mỗi tài liệu chỉ nên có một tiêu đề H1 duy nhất đóng vai trò là tên bài viết.
+
+Phần 2. Hoàn thiện đoạn mã
+
+Đây là đoạn mã Markdown đã được tối ưu, sửa hết lỗi cú pháp và tuân thủ quy tắc phân cấp tiêu đề (H1 -> H2):
+markdown
+# Tiêu đề chính của dự án
+
+## Giới thiệu dự án
+![Logo PTIT](https://ptit.edu.vn/logo.png)
+
+**Đây là đoạn văn bản in đậm.**
+
+## Mục tiêu
+- Quản lý sinh viên
+- Quản lý môn học
+Các điểm đã được khắc phục:
+• Thêm khoảng trắng sau ## Giới thiệu dự án và hạ bậc từ H3 xuống H2 để đảm bảo tính phân cấp logic (H1 -> H2).
+• Xóa khoảng trắng giữa ] và ( đồng thời thêm dấu ! ở trước thành ![Logo PTIT](...) để ảnh hiển thị chính xác.
+• Bọc đoạn văn bản vào cặp dấu ** để chuyển thành chữ in đậm.
