@@ -1,0 +1,29 @@
+Phần 1. Phân tích
+1. Chỉ ra 2 sai lầm trong tư duy của Nam về việc dùng file Word cho lưu trữ mã nguồn
+Sai lầm 1: Cho rằng file Word tốt hơn vì có giao diện WYSIWYG (trực quan, chọn font/màu sắc) và phù hợp để lưu trữ mã nguồn/tài liệu kỹ thuật chung với Git.
+
+Bản chất: File Word (.docx) thực chất là một tập tin nén định dạng XML chứa hàng loạt các tệp định nghĩa cấu trúc, style, và thiết kế nhị phân (binary). Khi đưa lên môi trường lập trình (như GitHub), hệ thống quản lý mã nguồn Git không thể đọc và so sánh sự khác biệt từng dòng (git diff) một cách tường minh giữa các phiên bản. Mỗi lần thay đổi nhỏ (như thêm một dấu phẩy), toàn bộ cấu trúc file nhị phân bên trong bị thay đổi, dẫn đến hiện tượng xung đột toàn bộ file (Conflict) không thể ghép nối thủ công dễ dàng.
+
+Sai lầm 2: Nhận định "Markdown chỉ là văn bản thô, không thể tạo được tài liệu chuyên nghiệp".
+
+Bản chất: Markdown sinh ra để giải quyết chính xác bài toán viết tài liệu kỹ thuật nhanh, gọn và chuyên nghiệp. Nó cho phép định dạng đầy đủ tiêu đề, bảng biểu, danh sách, khối mã nguồn (code block) và toán học. Khi render qua các trình phân tích cú pháp (Markdown Parser như trên GitHub), nó tự động chuyển đổi thành giao diện web trực quan, đẹp mắt mà không làm "phình to" kích thước tệp hay gây khó khăn cho việc cộng tác nhóm.
+
+2. Giải thích tại sao Markdown lại an toàn và nhẹ hơn (đối chiếu với bẫy dữ liệu)
+Về dung lượng (Nhẹ hơn): Markdown chỉ lưu trữ dưới dạng văn bản thuần túy (Plain Text), không chứa các metadata, mã định dạng kiểu dáng rườm rà hay hình ảnh nhúng chìm như .docx. Dung lượng của một file Markdown thường chỉ vài KB, giúp tiết kiệm bộ nhớ tối đa cho kho lưu trữ Git.
+
+Về tính an toàn (Chống hư hại file): Nếu file Word bị lỗi mạng hoặc mất mát dù chỉ 1 byte dữ liệu trong cấu trúc nén XML, toàn bộ tệp sẽ bị hỏng và phần mềm Microsoft Word sẽ báo lỗi không thể mở được. Ngược lại, Markdown là văn bản thô — nếu mất một vài ký tự, bạn vẫn có thể mở tệp bằng bất kỳ trình soạn thảo văn bản nào (Notepad, VS Code) để đọc hoặc khôi phục phần nội dung còn lại mà không lo bị hỏng toàn bộ cấu trúc file.
+
+Phần 2. Hoàn thiện (Mẫu nội dung file .md)
+Markdown
+# Giới thiệu Dự án: RES-Q (Emergency Response App)
+
+## 1. Tổng quan dự án
+RES-Q là ứng dụng di động hỗ trợ phản ứng khẩn cấp và đảm bảo an toàn cá nhân, giúp người dùng nhanh chóng kết nối với các lực lượng cứu hộ và người thân trong các tình huống nguy cấp.
+
+## 2. Thành viên nhóm
+* **Phạm Tuấn Linh** - Lớp D26TXCN03-N (Mã sinh viên: N26DTCN051)
+
+## 3. Lý do lựa chọn định dạng Markdown cho tài liệu dự án
+* **Dễ dàng theo dõi thay đổi (Git Diff):** Cho phép các thành viên trong nhóm nhìn thấy rõ ràng dòng nào được thêm vào hoặc xóa đi.
+* **Không sợ xung đột dữ liệu (Conflict):** Tránh tình trạng hỏng file cấu trúc nhị phân như định dạng `.docx` của Microsoft Word.
+* **Hiển thị trực quan trực tiếp trên GitHu
